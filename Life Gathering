@@ -1,0 +1,223 @@
+#include <iostream>
+#include <stdlib.h>
+#include <conio.h>
+using namespace std;
+
+struct DaftarSkill {
+	string nama;
+	string jenisSkill;
+	int nambahHp;
+};
+struct DaftarMusuh {
+	string nama;
+	
+	void lawan(DaftarMusuh *DaftarMusuhObject) {
+		cout << "Kamu" << " menghabisi " << DaftarMusuhObject -> nama << endl;
+	}
+};
+
+
+int main() {
+    int panjangRuang = 20;
+    int lebarRuang = 16; 
+    int nyawa = 5;
+    int posisiKarakterY = 15;
+    int posisiKarakterX = 6;
+    int skillRandom;
+    int score;
+
+	DaftarMusuh musuh;
+	musuh.nama = "Penjaga Obat";
+	    
+    DaftarSkill skill[]{
+		{
+			"Obat penyembuh",
+			"menambah nyawa sebanyak",
+			2
+		},
+	};
+        
+    char peta[lebarRuang][panjangRuang] = {
+        {5,5,5,5,5,5,5,5,5,5,5,5,1,1,1,1,1,1,1,'#'},
+        {5,5,5,5,5,5,5,5,5,5,5,5,5,5,1,1,1,1,1,1},
+        {5,5,5,5,5,5,5,5,5,5,5,5,1,5,5,1,1,1,1,1},
+        {5,5,5,5,5,5,5,5,5,1,1,1,1,1,1,1,1,1,1,1},
+        {5,5,5,5,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        {5,5,5,5,5,5,5,1,1,1,1,1,1,4,4,4,4,1,1,1},
+        {1,1,1,1,1,1,1,1,1,1,1,1,1,4,4,4,4,1,1,1},
+        {5,5,5,5,5,1,1,1,1,1,4,4,4,4,4,4,4,1,1,1},
+        {1,1,1,1,1,1,1,1,4,4,4,4,4,4,4,4,5,5,5,5},
+        {1,1,5,5,5,5,1,1,4,4,4,4,4,4,4,4,4,1,6,1},
+        {1,1,5,5,5,5,1,1,4,4,4,1,1,4,4,1,1,1,1,1},
+        {1,1,5,5,5,5,1,1,4,4,4,1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,4,4,4,1,1,1,1,1,1,1,1,1},
+        {1,1,1,1,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,1},
+        {1,5,5,5,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1},
+        {1,5,5,5,1,1,1,1,1,1,4,1,1,1,1,1,1,1,1,1},
+    };    
+    
+    int arrowKey = 0;
+    cout  << "===============LIFE GATHERING===============" << endl;
+	cout << "Tantangan untuk pemain :\n1. Menabrak obstacle (pohon dan batu) nyawa akan berkurang 1\n2. System kadang memberi tantangan sebelum menabrak obstacle, nyawa berkurang 1\n3. Ada penjaga yang siap menghadangmu";
+    cout << "  \nKamu dikasih nyawa untuk saat ini 5\n\n";
+
+    while(1) {
+		skillRandom = rand() % 50;
+        // Input Keyboard
+        cout << "Nyawa kamu (" << nyawa << ")\nMasukan perintah dengan arrowkey keyboard: \n";
+		arrowKey = getch();        
+        system("cls");
+        
+        // Aturan menggerakkan karakter ke atas
+        if(arrowKey == 72 && (peta[posisiKarakterY-1][posisiKarakterX] == 1) && posisiKarakterY >= 0) {
+            // Gerakkan karakter ke atas untuk melewati satu jalan
+            posisiKarakterY = posisiKarakterY-1;
+        }
+        
+        // Aturan menggerakkan karakter ke bawah
+        if(arrowKey == 80 && (peta[posisiKarakterY+1][posisiKarakterX] == 1) && posisiKarakterY < lebarRuang) {
+            // Gerakkan karakter ke atas
+            posisiKarakterY = posisiKarakterY+1;
+        }
+        
+        // Aturan menggerakkan karakter ke kiri
+        if(arrowKey == 75 && (peta[posisiKarakterY][posisiKarakterX-1] == 1) && posisiKarakterX >= 0) {
+            // Gerakkan karakter ke atas
+            posisiKarakterX = posisiKarakterX-1;
+        }
+        
+        // Aturan menggerakkan karakter ke kanan
+        if(arrowKey == 77 && (peta[posisiKarakterY][posisiKarakterX+1] == 1) && posisiKarakterX < panjangRuang) {
+            // Gerakkan karakter ke atas
+            posisiKarakterX = posisiKarakterX+1;
+        }
+        
+        // Render grafik
+        for(int y=0; y<lebarRuang; y++) {
+            for(int x=0; x<panjangRuang; x++) {
+                
+                if(posisiKarakterX == x && posisiKarakterY == y) {
+                    cout << 1 << " ";
+                } else {
+                    cout << peta[y][x] << " ";
+                }
+            }
+            cout << "\n";
+        }
+
+        
+        //Cek pohon
+        	if (arrowKey == 72 && posisiKarakterY > 0) {
+            	if (peta[posisiKarakterY - 1][posisiKarakterX] == 2 || peta[posisiKarakterY - 1][posisiKarakterX] == 5 || peta[posisiKarakterY - 1][posisiKarakterX] == 7 ) {
+					nyawa--;
+					cout << "Di depan ada pohon, hati - hati menabraknya!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";  
+	            }  					
+			}else if (arrowKey == 75 && posisiKarakterX > 0) {
+	            if (peta[posisiKarakterY][posisiKarakterX - 1] == 2 || peta[posisiKarakterY][posisiKarakterX - 1] == 5 || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+	                nyawa--;
+					cout << "Kamu menabrak pohon!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";
+	            }
+	        } else if (arrowKey == 77 && posisiKarakterX < (panjangRuang - 1)) {
+	            if (peta[posisiKarakterY][posisiKarakterX + 1] == 2 || peta[posisiKarakterY][posisiKarakterX + 1] == 5 || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+	                nyawa--;
+					cout << "Kamu menabrak pohon!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";
+	            }
+	        } else if (arrowKey == 80 && posisiKarakterY < (lebarRuang - 1)) {
+	            if (peta[posisiKarakterY + 1][posisiKarakterX] == 2 || peta[posisiKarakterY + 1][posisiKarakterX] == 5 || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+	                nyawa--;
+					cout << "Kamu menabrak pohon!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";
+	            }
+	        }	
+	        
+        //Cek batu
+        if (arrowKey == 72 && posisiKarakterY > 0) {
+            if (peta[posisiKarakterY - 1][posisiKarakterX] == 2 || peta[posisiKarakterY - 1][posisiKarakterX] == 4 || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+                nyawa--;
+				cout << "Di depan ada Batu, hati - hati menabraknya!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";
+            }
+        } else if (arrowKey == 75 && posisiKarakterX > 0) {
+            if (peta[posisiKarakterY][posisiKarakterX - 1] == 2 || peta[posisiKarakterY][posisiKarakterX - 1] == 4 || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+                nyawa--;
+				cout << "Kamu menabrak Batu!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";
+            }
+        } else if (arrowKey == 77 && posisiKarakterX < (panjangRuang - 1)) {
+            if (peta[posisiKarakterY][posisiKarakterX + 1] == 2 || peta[posisiKarakterY][posisiKarakterX + 1] == 4 || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+                nyawa--;
+				cout << "Kamu menabrak Batu!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";
+            }
+        } else if (arrowKey == 80 && posisiKarakterY < (lebarRuang - 1)) {
+            if (peta[posisiKarakterY + 1][posisiKarakterX] == 2 || peta[posisiKarakterY + 1][posisiKarakterX] == 4 || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+                nyawa--;
+				cout << "Kamu menabrak Batu!!!\nSisa nyawa kamu " << nyawa << " lagi!!\n";
+            }
+        }
+        
+        // Skill random
+        char pilihan;
+        	// obat dengan penjaga
+            if (skillRandom == 1){
+            	cout << "Obat ini memiliki penjaga, bertarunglah\ndengan merelakan 1 nyawa untuk mendapatkan\n(" << skill[0].nama << ") Mau bertarung ? (Y/N)" << endl;
+            	cin >> pilihan;
+            	if (pilihan == 'y' || pilihan == 'Y'){
+            		if (nyawa < 1 ){
+            			goto nyawaGakCukup;
+					}else if (nyawa > 1){
+						musuh.lawan(&musuh);
+						nyawa -= 1;
+						cout << "Nyawa berkurang 1" << endl;
+						cout << "Tapi kamu mendapatkan " << skill[0].nama << " " << skill[0].jenisSkill << " " << skill[0].nambahHp << endl << endl;
+						if (skill[0].nambahHp = 2){
+	            		nyawa += 2;
+	            		cout << "Nyawa kamu sekarang " << nyawa << " lagi" << endl;	
+					}
+				}
+				}else{
+					cout << "Kamu menghindari penjaga, nyawa kamu tidak berubah" << endl << endl;
+				}
+				nyawaGakCukup:
+					cout << "Nyawa kamu tidak cukup!!!, Hindari langsung\n" << endl;
+					
+			}
+			
+			// skill tanpa penjaga
+			if (skillRandom == 2){
+            	cout << "Obat tidak memiliki penjaga " << "Mau ambil ? (Y/N)" << endl;
+            	cin >> pilihan;
+            	if (pilihan == 'y' || pilihan == 'Y'){
+					cout << "Kamu mendapatkan " << skill[0].nama << " " << skill[0].jenisSkill << " " << skill[0].nambahHp << endl << endl;
+					
+				if (skill[0].nambahHp = 2){
+            		nyawa += 2;
+            		cout << "Nyawa kamu sekarang " << nyawa << " lagi" << endl;
+					}
+				}else{
+					cout << "Kamu tidak mengambil obat, nyawa kamu tidak berubah" << endl << endl;
+				}				
+			}
+				            
+				            
+        // Finish
+        if (arrowKey == 72 && posisiKarakterY > 0) {
+            if (peta[posisiKarakterY - 1][posisiKarakterX] == '#' || peta[posisiKarakterY - 1][posisiKarakterX] == '#' || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+                goto akhir;
+            }
+        }else if (arrowKey == 77 && posisiKarakterX < (panjangRuang - 1)) {
+            if (peta[posisiKarakterY][posisiKarakterX + 1] == '#' || peta[posisiKarakterY][posisiKarakterX + 1] == '#' || peta[posisiKarakterY-1][posisiKarakterX] == 7 ) {
+                goto akhir;
+            }
+        }
+        
+        // jika nyawa 0
+        if (nyawa < 1){
+	        	system ("cls");
+				cout << "Kamu kehabisan nyawa\nGAME OVER!!!\n";
+	        	exit(0);
+			}
+    }
+    // Tampilan untuk finish
+    akhir:
+     system("cls");
+     score = nyawa * 1000;
+     cout << "Selamat kamu sampai tujuan dengan sisa nyawa " << nyawa << " lagi" << "\nSCORE = ("<< score << ")\nGAME OVER!!!\n";
+    return 0;
+}
